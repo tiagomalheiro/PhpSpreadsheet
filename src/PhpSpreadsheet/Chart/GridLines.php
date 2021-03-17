@@ -13,12 +13,15 @@ class GridLines extends Properties
     /**
      * Properties of Class:
      * Object State (State for Minor Tick Mark) @var bool
+     * Show the gridlines @var bool
      * Line Properties @var  array of mixed
      * Shadow Properties @var  array of mixed
      * Glow Properties @var  array of mixed
      * Soft Properties @var  array of mixed.
      */
     private $objectState = false;
+
+    private $showGridLines = true;
 
     private $lineProperties = [
         'color' => [
@@ -98,6 +101,26 @@ class GridLines extends Properties
         $this->objectState = true;
 
         return $this;
+    }
+
+    /**
+     * Set Show Gridlines.
+     *
+     * @param bool $value
+     */
+    public function setShowGridLines(bool $show = true)
+    {
+        $this->showGridLines = $show;
+    }
+
+    /**
+     * Get Show Gridlines.
+     *
+     * @return bool $value
+     */
+    public function getShowGridLines()
+    {
+        return $this->showGridLines;
     }
 
     /**
