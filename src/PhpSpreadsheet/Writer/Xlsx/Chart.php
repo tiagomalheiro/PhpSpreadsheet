@@ -538,113 +538,115 @@ class Chart extends WriterPart
         $objWriter->writeAttribute('val', 'l');
         $objWriter->endElement();
 
-        $objWriter->startElement('c:majorGridlines');
-        $objWriter->startElement('c:spPr');
+        if ($majorGridlines->getShowGridLines()) {
+            $objWriter->startElement('c:majorGridlines');
+            $objWriter->startElement('c:spPr');
 
-        if ($majorGridlines->getLineColorProperty('value') !== null) {
-            $objWriter->startElement('a:ln');
-            $objWriter->writeAttribute('w', $majorGridlines->getLineStyleProperty('width'));
-            $objWriter->startElement('a:solidFill');
-            $objWriter->startElement("a:{$majorGridlines->getLineColorProperty('type')}");
-            $objWriter->writeAttribute('val', $majorGridlines->getLineColorProperty('value'));
-            $objWriter->startElement('a:alpha');
-            $objWriter->writeAttribute('val', $majorGridlines->getLineColorProperty('alpha'));
-            $objWriter->endElement(); //end alpha
-            $objWriter->endElement(); //end srgbClr
-            $objWriter->endElement(); //end solidFill
+            if ($majorGridlines->getLineColorProperty('value') !== null) {
+                $objWriter->startElement('a:ln');
+                $objWriter->writeAttribute('w', $majorGridlines->getLineStyleProperty('width'));
+                $objWriter->startElement('a:solidFill');
+                $objWriter->startElement("a:{$majorGridlines->getLineColorProperty('type')}");
+                $objWriter->writeAttribute('val', $majorGridlines->getLineColorProperty('value'));
+                $objWriter->startElement('a:alpha');
+                $objWriter->writeAttribute('val', $majorGridlines->getLineColorProperty('alpha'));
+                $objWriter->endElement(); //end alpha
+                $objWriter->endElement(); //end srgbClr
+                $objWriter->endElement(); //end solidFill
 
-            $objWriter->startElement('a:prstDash');
-            $objWriter->writeAttribute('val', $majorGridlines->getLineStyleProperty('dash'));
-            $objWriter->endElement();
-
-            if ($majorGridlines->getLineStyleProperty('join') == 'miter') {
-                $objWriter->startElement('a:miter');
-                $objWriter->writeAttribute('lim', '800000');
+                $objWriter->startElement('a:prstDash');
+                $objWriter->writeAttribute('val', $majorGridlines->getLineStyleProperty('dash'));
                 $objWriter->endElement();
-            } else {
-                $objWriter->startElement('a:bevel');
-                $objWriter->endElement();
+
+                if ($majorGridlines->getLineStyleProperty('join') == 'miter') {
+                    $objWriter->startElement('a:miter');
+                    $objWriter->writeAttribute('lim', '800000');
+                    $objWriter->endElement();
+                } else {
+                    $objWriter->startElement('a:bevel');
+                    $objWriter->endElement();
+                }
+
+                if ($majorGridlines->getLineStyleProperty(['arrow', 'head', 'type']) !== null) {
+                    $objWriter->startElement('a:headEnd');
+                    $objWriter->writeAttribute('type', $majorGridlines->getLineStyleProperty(['arrow', 'head', 'type']));
+                    $objWriter->writeAttribute('w', $majorGridlines->getLineStyleArrowParameters('head', 'w'));
+                    $objWriter->writeAttribute('len', $majorGridlines->getLineStyleArrowParameters('head', 'len'));
+                    $objWriter->endElement();
+                }
+
+                if ($majorGridlines->getLineStyleProperty(['arrow', 'end', 'type']) !== null) {
+                    $objWriter->startElement('a:tailEnd');
+                    $objWriter->writeAttribute('type', $majorGridlines->getLineStyleProperty(['arrow', 'end', 'type']));
+                    $objWriter->writeAttribute('w', $majorGridlines->getLineStyleArrowParameters('end', 'w'));
+                    $objWriter->writeAttribute('len', $majorGridlines->getLineStyleArrowParameters('end', 'len'));
+                    $objWriter->endElement();
+                }
+                $objWriter->endElement(); //end ln
+            }
+            $objWriter->startElement('a:effectLst');
+
+            if ($majorGridlines->getGlowSize() !== null) {
+                $objWriter->startElement('a:glow');
+                $objWriter->writeAttribute('rad', $majorGridlines->getGlowSize());
+                $objWriter->startElement("a:{$majorGridlines->getGlowColor('type')}");
+                $objWriter->writeAttribute('val', $majorGridlines->getGlowColor('value'));
+                $objWriter->startElement('a:alpha');
+                $objWriter->writeAttribute('val', $majorGridlines->getGlowColor('alpha'));
+                $objWriter->endElement(); //end alpha
+                $objWriter->endElement(); //end schemeClr
+                $objWriter->endElement(); //end glow
             }
 
-            if ($majorGridlines->getLineStyleProperty(['arrow', 'head', 'type']) !== null) {
-                $objWriter->startElement('a:headEnd');
-                $objWriter->writeAttribute('type', $majorGridlines->getLineStyleProperty(['arrow', 'head', 'type']));
-                $objWriter->writeAttribute('w', $majorGridlines->getLineStyleArrowParameters('head', 'w'));
-                $objWriter->writeAttribute('len', $majorGridlines->getLineStyleArrowParameters('head', 'len'));
-                $objWriter->endElement();
+            if ($majorGridlines->getShadowProperty('presets') !== null) {
+                $objWriter->startElement("a:{$majorGridlines->getShadowProperty('effect')}");
+                if ($majorGridlines->getShadowProperty('blur') !== null) {
+                    $objWriter->writeAttribute('blurRad', $majorGridlines->getShadowProperty('blur'));
+                }
+                if ($majorGridlines->getShadowProperty('distance') !== null) {
+                    $objWriter->writeAttribute('dist', $majorGridlines->getShadowProperty('distance'));
+                }
+                if ($majorGridlines->getShadowProperty('direction') !== null) {
+                    $objWriter->writeAttribute('dir', $majorGridlines->getShadowProperty('direction'));
+                }
+                if ($majorGridlines->getShadowProperty('algn') !== null) {
+                    $objWriter->writeAttribute('algn', $majorGridlines->getShadowProperty('algn'));
+                }
+                if ($majorGridlines->getShadowProperty(['size', 'sx']) !== null) {
+                    $objWriter->writeAttribute('sx', $majorGridlines->getShadowProperty(['size', 'sx']));
+                }
+                if ($majorGridlines->getShadowProperty(['size', 'sy']) !== null) {
+                    $objWriter->writeAttribute('sy', $majorGridlines->getShadowProperty(['size', 'sy']));
+                }
+                if ($majorGridlines->getShadowProperty(['size', 'kx']) !== null) {
+                    $objWriter->writeAttribute('kx', $majorGridlines->getShadowProperty(['size', 'kx']));
+                }
+                if ($majorGridlines->getShadowProperty('rotWithShape') !== null) {
+                    $objWriter->writeAttribute('rotWithShape', $majorGridlines->getShadowProperty('rotWithShape'));
+                }
+                $objWriter->startElement("a:{$majorGridlines->getShadowProperty(['color', 'type'])}");
+                $objWriter->writeAttribute('val', $majorGridlines->getShadowProperty(['color', 'value']));
+
+                $objWriter->startElement('a:alpha');
+                $objWriter->writeAttribute('val', $majorGridlines->getShadowProperty(['color', 'alpha']));
+                $objWriter->endElement(); //end alpha
+
+                $objWriter->endElement(); //end color:type
+                $objWriter->endElement(); //end shadow
             }
 
-            if ($majorGridlines->getLineStyleProperty(['arrow', 'end', 'type']) !== null) {
-                $objWriter->startElement('a:tailEnd');
-                $objWriter->writeAttribute('type', $majorGridlines->getLineStyleProperty(['arrow', 'end', 'type']));
-                $objWriter->writeAttribute('w', $majorGridlines->getLineStyleArrowParameters('end', 'w'));
-                $objWriter->writeAttribute('len', $majorGridlines->getLineStyleArrowParameters('end', 'len'));
-                $objWriter->endElement();
+            if ($majorGridlines->getSoftEdgesSize() !== null) {
+                $objWriter->startElement('a:softEdge');
+                $objWriter->writeAttribute('rad', $majorGridlines->getSoftEdgesSize());
+                $objWriter->endElement(); //end softEdge
             }
-            $objWriter->endElement(); //end ln
+
+            $objWriter->endElement(); //end effectLst
+            $objWriter->endElement(); //end spPr
+            $objWriter->endElement(); //end majorGridLines
         }
-        $objWriter->startElement('a:effectLst');
 
-        if ($majorGridlines->getGlowSize() !== null) {
-            $objWriter->startElement('a:glow');
-            $objWriter->writeAttribute('rad', $majorGridlines->getGlowSize());
-            $objWriter->startElement("a:{$majorGridlines->getGlowColor('type')}");
-            $objWriter->writeAttribute('val', $majorGridlines->getGlowColor('value'));
-            $objWriter->startElement('a:alpha');
-            $objWriter->writeAttribute('val', $majorGridlines->getGlowColor('alpha'));
-            $objWriter->endElement(); //end alpha
-            $objWriter->endElement(); //end schemeClr
-            $objWriter->endElement(); //end glow
-        }
-
-        if ($majorGridlines->getShadowProperty('presets') !== null) {
-            $objWriter->startElement("a:{$majorGridlines->getShadowProperty('effect')}");
-            if ($majorGridlines->getShadowProperty('blur') !== null) {
-                $objWriter->writeAttribute('blurRad', $majorGridlines->getShadowProperty('blur'));
-            }
-            if ($majorGridlines->getShadowProperty('distance') !== null) {
-                $objWriter->writeAttribute('dist', $majorGridlines->getShadowProperty('distance'));
-            }
-            if ($majorGridlines->getShadowProperty('direction') !== null) {
-                $objWriter->writeAttribute('dir', $majorGridlines->getShadowProperty('direction'));
-            }
-            if ($majorGridlines->getShadowProperty('algn') !== null) {
-                $objWriter->writeAttribute('algn', $majorGridlines->getShadowProperty('algn'));
-            }
-            if ($majorGridlines->getShadowProperty(['size', 'sx']) !== null) {
-                $objWriter->writeAttribute('sx', $majorGridlines->getShadowProperty(['size', 'sx']));
-            }
-            if ($majorGridlines->getShadowProperty(['size', 'sy']) !== null) {
-                $objWriter->writeAttribute('sy', $majorGridlines->getShadowProperty(['size', 'sy']));
-            }
-            if ($majorGridlines->getShadowProperty(['size', 'kx']) !== null) {
-                $objWriter->writeAttribute('kx', $majorGridlines->getShadowProperty(['size', 'kx']));
-            }
-            if ($majorGridlines->getShadowProperty('rotWithShape') !== null) {
-                $objWriter->writeAttribute('rotWithShape', $majorGridlines->getShadowProperty('rotWithShape'));
-            }
-            $objWriter->startElement("a:{$majorGridlines->getShadowProperty(['color', 'type'])}");
-            $objWriter->writeAttribute('val', $majorGridlines->getShadowProperty(['color', 'value']));
-
-            $objWriter->startElement('a:alpha');
-            $objWriter->writeAttribute('val', $majorGridlines->getShadowProperty(['color', 'alpha']));
-            $objWriter->endElement(); //end alpha
-
-            $objWriter->endElement(); //end color:type
-            $objWriter->endElement(); //end shadow
-        }
-
-        if ($majorGridlines->getSoftEdgesSize() !== null) {
-            $objWriter->startElement('a:softEdge');
-            $objWriter->writeAttribute('rad', $majorGridlines->getSoftEdgesSize());
-            $objWriter->endElement(); //end softEdge
-        }
-
-        $objWriter->endElement(); //end effectLst
-        $objWriter->endElement(); //end spPr
-        $objWriter->endElement(); //end majorGridLines
-
-        if ($minorGridlines->getObjectState()) {
+        if ($minorGridlines->getObjectState() && $minorGridlines->getShowGridLines()) {
             $objWriter->startElement('c:minorGridlines');
             $objWriter->startElement('c:spPr');
 
